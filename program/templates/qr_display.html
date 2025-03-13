@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>掃描 QR Code</title>
+    <style>
+        /* 設定整個頁面 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100vh; /* 讓頁面佔滿整個視窗 */
+            display: flex;
+            justify-content: center;  /* 水平置中 */
+            align-items: center;      /* 垂直置中 */
+            background: url('/images/02.jpg') no-repeat center center fixed;
+            background-size: cover; /* 背景圖片滿版 */
+            text-align: center;
+            color: white; /* 讓文字變白色，提高可讀性 */
+            font-family: Arial, sans-serif;
+        }
+
+        /* 置中的內容 */
+        .container {
+            display: flex;
+            flex-direction: column; /* 讓 QR Code 和文字垂直排列 */
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5); /* 加一層透明黑色背景，避免文字難以辨識 */
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 90%; /* 避免太大 */
+        }
+
+        h1 {
+            margin: 0 0 15px; /* 調整標題的間距 */
+            font-size: 24px;
+        }
+
+        img {
+            width: 200px;  /* QR Code 大小 */
+            height: 200px;
+            margin-top: 10px;
+            border: 5px solid white; /* 給 QR Code 加個白色邊框，提高辨識度 */
+            border-radius: 10px;
+        }
+
+        /* 連結樣式 */
+        p {
+            margin-top: 15px;
+            font-size: 16px;
+        }
+
+        a {
+            color: #FFD700; /* 黃金色，提高可讀性 */
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>請掃描 QR Code 綁定您的 Line 商店</h1>
+        <img src="/qrcodes/{{ qr_code }}" alt="QR Code">
+        <p>或點擊此連結進行綁定： <a href="{{ bind_url }}">{{ bind_url }}</a></p>
+    </div>
+
+</body>
+</html>

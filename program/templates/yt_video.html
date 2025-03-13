@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube IFrame API 範例</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    /* 背景圖片 */
+    .image-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+    }
+
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    h2 {
+      margin-top: 20px;
+      font-size: 24px;
+    }
+    #player-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      width: 50%;
+      margin: 20px auto;
+    }
+    label {
+      font-size: 16px;
+      font-weight: bold;
+    }
+    select, input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>For Your Recommendation</h2>
+
+  <!-- 影片容器 -->
+  <div id="player-container">
+    <div id="player"></div>
+  </div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <script>
+    var player;
+
+    function onYouTubeIframeAPIReady() {
+      console.log("YouTube API 已準備好！");
+      
+      player = new YT.Player('player', {
+        height: '360',
+        width: '640',
+        videoId: "{{ message }}",
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange,
+          'onError': onPlayerError
+        }
+      });
+    }
+
+    function onPlayerReady(event) {
+      console.log('影片已準備好');
+      event.target.playVideo();
+      if (player) {
+        console.log(player.getVideoData());
+      } else {
+        console.log('player 尚未初始化');
+      }
+    }
+
+    function onPlayerStateChange(event) {
+      if (event.data == YT.PlayerState.PLAYING) {
+        console.log('影片正在播放');
+      } else if (event.data == YT.PlayerState.PAUSED) {
+        console.log('影片已暫停');
+      } else if (event.data == YT.PlayerState.ENDED) {
+        console.log('影片已結束');
+      }
+    }
+
+    function onPlayerError(event) {
+      console.log("影片無法播放，錯誤代碼：" + event.data);
+      document.getElementById("player-container").innerHTML = 
+        `<p>這部影片無法嵌入播放，請 <a href="https://www.youtube.com/watch?v={{ message }}" target="_blank">點擊這裡</a> 觀看。</p>`;
+    }
+  </script>
+  
+  <!-- 反饋表單 -->
+  <form method="POST" action="{{ url_for('feedback') }}">
+    <input type="hidden" name="video_id" value="{{ message }}">
+    <input type="hidden" name="keyword" value="{{ keyword }}">
+    <input type="hidden" name="category" value="{{ category }}">
+    
+    <label for="difficulty">影片難易度:</label>
+    <select id="difficulty" name="difficulty" required>
+      <option value="簡單">簡單</option>
+      <option value="入門">入門</option>
+      <option value="中等">中等</option>
+      <option value="進階">進階</option>
+      <option value="專業">專業</option>
+    </select>
+    
+    <label for="rating">影片推薦度 (1-10):</label>
+    <input type="number" id="rating" name="rating" min="1" max="10" required>
+    
+    <button type="submit">提交回饋(提交後請直接關閉網頁)</button>
+  </form>
+
+  <div class="image-container">
+    <img src="/images/02.jpg" alt="兒童圖片">
+</div>
+
+</body>
+</html>

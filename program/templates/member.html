@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>註冊頁面</title>
+    <style>
+        /* 背景圖片 */
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-image: url("/images/02.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        /* 表單容器 */
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        /* 表單元素 */
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 密碼規則區塊 */
+        .password-rule {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .password-rule h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .password-rule p {
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 註冊表單 -->
+<div class="container">
+    <h2>註冊帳號</h2>
+    <form action="/user" method="POST">
+        <input type="text" name="name" placeholder="您的姓名" required>
+        <input type="email" name="email" placeholder="您的信箱" required>
+        <input type="text" name="account" placeholder="設定帳號" required>
+        <input type="password" name="password" placeholder="設定密碼" required>
+        <button type="submit">送出表單</button>
+    </form>
+</div>
+
+<!-- 密碼規則 -->
+<div class="password-rule">
+    <h2>🔐 密碼規則</h2>
+    <p>✅ 只能包含大小寫英文字母、數字、以及 ! @ # $ %</p>
+    <p>✅ 必須包含至少一個大寫和一個小寫字母</p>
+    <p>✅ 必須包含至少一個數字</p>
+    <p>✅ 必須包含至少一個特殊符號</p>
+    <p>✅ 長度須介於 8 至 16 個字元</p>
+</div>
+
+<script src="index.js"></script>
+</body>
+</html>

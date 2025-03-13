@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>Line 綁定</title>
+</head>
+<body>
+    <h2>Line 綁定頁面</h2>
+    <p>您的綁定碼：{{ unique_key }}</p>
+    <p>請點擊下方按鈕，進行 LINE 授權綁定：</p>
+    <a href="{{ line_auth_url }}"><button>綁定到 LINE 商店</button></a>
+    <br>
+    <a href="/">回首頁</a>
+</body>
+</html>

@@ -1,6 +1,8 @@
 # EduShield
 Use AI to teach, recommend videos, and filter inappropriate information for children
 
+![EduShield_logo_no_bg (1)](https://github.com/user-attachments/assets/49916e4e-8c65-439c-9238-a9ff7e4df45d)
+
 產頻名稱:EduShield ｜ 智能保護及學習資源推薦平台
 
 產品說明:

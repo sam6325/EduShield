@@ -1157,57 +1157,47 @@ def video(video_id, keyword, category):
 
 @app.route("/feedback", methods=["POST"])
 def feedback():
-    # MariaDB 连接配置，请根据实际情况修改
     thedb = request.form.get("category")
-
     db_config = {
-        "host": "your_mariadb_host",
-        "user": "your_username",
-        "password": "your_password",
+        "host": "10.167.214.47",
+        "user": "admin",
+        "password": "dv107",
         "database": thedb,
     }
 
-    # 获取前端传递的参数
     video_id = request.form.get("video_id")
-    table = request.form.get("keyword")  # 表名，由前端传入关键字
+    table = request.form.get("keyword")
     new_difficulty = request.form.get("difficulty")
-    new_recommendation = request.form.get("recommendation")
+    new_recommendation = request.form.get("rating")
+    print(
+        f"收到的數據：video_id={video_id}, table={table}, new_difficulty={new_difficulty}, new_recommendation={new_recommendation}"
+    )
 
-    # 将文字反馈转换为数值（根据你的需求）
-    if new_recommendation == "簡單":
-        new_recommendation = 2
-    elif new_recommendation == "入門":
-        new_recommendation = 4
-    elif new_recommendation == "中等":
-        new_recommendation = 6
-    elif new_recommendation == "進階":
-        new_recommendation = 8
-    elif new_recommendation == "專業":
-        new_recommendation = 10
-    else:
-        new_recommendation = 0
+    # 轉換 `recommendation`
+    difficulty_map = {"簡單": 2, "入門": 4, "中等": 6, "進階": 8, "專業": 10}
+    new_difficulty = difficulty_map.get(new_difficulty, 0)
 
-    # 防呆检查：若反馈数据不完整，则不更新数据库
     if not new_difficulty or not new_recommendation:
         flash("您未提供完整回饋，資料庫未更新。", "warning")
         return redirect(request.referrer)
 
     try:
-        # 转换为数值型数据
         new_difficulty = float(new_difficulty)
         new_recommendation = float(new_recommendation)
+        print(
+            f"轉換後的數據：new_difficulty={new_difficulty}, new_recommendation={new_recommendation}"
+        )
     except ValueError:
-        flash("反馈数据格式错误。", "error")
+        flash("回饋數據格式錯誤。", "error")
         return redirect(request.referrer)
 
     try:
-        # 连接数据库
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor(dictionary=True)
+        print(f"成功連接到 {db_config['database']} 資料庫")
 
-        # 查询当前 video_id 的反馈记录（动态替换表名）
         select_query = (
-            f"SELECT difficulty, recommendation, watch FROM {table} WHERE video_id = %s"
+            f"SELECT difficulty, recommendation, watch FROM {table} WHERE link = %s"
         )
         cursor.execute(select_query, (video_id,))
         row = cursor.fetchone()
@@ -1216,30 +1206,46 @@ def feedback():
             current_watch = row["watch"] or 0
             current_avg_difficulty = row["difficulty"] or 0.0
             current_avg_recommendation = row["recommendation"] or 0.0
-
-            # 计算新的投票数
             new_watch = current_watch + 1
 
-            # 使用你指定的公式计算新的平均值
-            new_avg_difficulty = current_avg_difficulty + (new_difficulty / new_watch)
-            new_avg_recommendation = current_avg_recommendation + (
-                new_recommendation / new_watch
+            # Bayesian 平滑計算
+            global_avg_query = f"SELECT AVG(recommendation) AS global_avg FROM {table}"
+            cursor.execute(global_avg_query)
+            global_avg = cursor.fetchone()["global_avg"] or 5
+
+            C = 10
+            if new_watch < C:
+                new_avg_recommendation = (
+                    C * global_avg
+                    + current_watch * current_avg_recommendation
+                    + new_recommendation
+                ) / (C + new_watch)
+            else:
+                new_avg_recommendation = (
+                    new_recommendation * 0.5 * 10
+                    + current_avg_recommendation * 0.5 * 100
+                ) / 110
+
+            new_avg_difficulty = (
+                current_avg_difficulty
+                + (new_difficulty - current_avg_difficulty) / new_watch
             )
 
             update_query = f"""
                 UPDATE {table} 
                 SET difficulty = %s, recommendation = %s, watch = %s
-                WHERE video_id = %s
+                WHERE link = %s
             """
             cursor.execute(
                 update_query,
                 (new_avg_difficulty, new_avg_recommendation, new_watch, video_id),
             )
+            if cursor.rowcount == 0:
+                print("⚠️  沒有任何行被更新，請檢查 SQL 條件")
         else:
-            # 若记录不存在，则插入新记录（这里插入时也用原始反馈值）
             watch = 1
             insert_query = f"""
-                INSERT INTO {table} (video_id, difficulty, recommendation, watch)
+                INSERT INTO {table} (link, difficulty, recommendation, watch)
                 VALUES (%s, %s, %s, %s)
             """
             cursor.execute(
@@ -1247,6 +1253,7 @@ def feedback():
             )
 
         conn.commit()
+        print("資料更新成功！")
     except Exception as e:
         flash(f"資料更新失敗: {str(e)}", "error")
         return redirect(request.referrer)

@@ -2,14 +2,79 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Line 綁定</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+        .button {
+            display: inline-block;
+            background-color: #06c755;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+        .button:hover {
+            background-color: #05b249;
+        }
+        .home-link {
+            display: block;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #06c755;
+            font-weight: bold;
+        }
+        .home-link:hover {
+            text-decoration: underline;
+        }
+        .key {
+            word-break: break-all;
+            overflow-wrap: break-word;
+        }
+    </style>
 </head>
 <body>
-    <h2>Line 綁定頁面</h2>
-    <p>您的綁定碼：{{ unique_key }}</p>
-    <p>請點擊下方按鈕，進行 LINE 授權綁定：</p>
-    <a href="{{ line_auth_url }}"><button>綁定到 LINE 商店</button></a>
-    <br>
-    <a href="/">回首頁</a>
+    <div class="container">
+        <h2>LINE 綁定頁面</h2>
+        <p>您的綁定碼：<span class="key-container"><strong class="key">{{ unique_key }}</strong></span></p>
+        <p>請點擊下方按鈕，進行 LINE 授權綁定：</p>
+        <a href="{{ line_auth_url }}" class="button">綁定到 LINE 商店</a>
+        <a href="/" class="home-link">回首頁</a>
+    </div>
 </body>
 </html>

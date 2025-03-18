@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <!-- ...existing code... -->
+</head>
+<body>
+    <!-- ...existing code... -->
+
+    <!-- 顯示 flash 訊息 -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <script>
+                {% for category, message in messages %}
+                    alert("{{ message }}");
+                {% endfor %}
+            </script>
+        {% endif %}
+    {% endwith %}
+
+    <!-- 子模板內容將插入到這裡 -->
+    {% block content %}{% endblock %}
+
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/custom.js"></script>
+</body>
+</html>

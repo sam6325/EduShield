@@ -419,7 +419,7 @@ def video(video_id, keyword, category):
 def feedback():
     thedb = request.form.get("category")
     db_config = {
-        "host": "10.167.214.47",
+        "host": "10.167.214.28",
         "user": "admin",
         "password": "dv107",
         "database": thedb,
